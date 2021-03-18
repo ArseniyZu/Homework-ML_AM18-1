@@ -13,6 +13,7 @@ def multiclass_accuracy(prediction, ground_truth):
     """
     accuracy = 0
     # TODO: Implement computing accuracy
-    raise Exception("Not implemented!")
+    # raise Exception("Not implemented!")
+    accuracy = np.mean(prediction == ground_truth)
 
     return accuracy
