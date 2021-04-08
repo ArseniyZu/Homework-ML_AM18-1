@@ -4,39 +4,48 @@ import numpy as np
 def l2_regularization(W, reg_strength):
     '''
     Computes L2 regularization loss on weights and its gradient
-
     Arguments:
       W, np array - weights
       reg_strength - float value
-
     Returns:
       loss, single value - l2 regularization loss
       gradient, np.array same shape as W - gradient of weight by l2 loss
     '''
-    # TODO: Copy from previous assignment
-    raise Exception("Not implemented!")
-
+    loss = reg_strength * np.sum(W ** 2)
+    grad = 2 * reg_strength * W
     return loss, grad
 
-
 def softmax_with_cross_entropy(predictions, target_index):
-    '''
+     '''
     Computes softmax and cross-entropy loss for model predictions,
     including the gradient
-
     Arguments:
       predictions, np array, shape is either (N) or (batch_size, N) -
         classifier output
       target_index: np array of int, shape is (1) or (batch_size) -
         index of the true class for given sample(s)
-
     Returns:
       loss, single value - cross-entropy loss
       dprediction, np array same shape as predictions - gradient of predictions by loss value
     '''
-    # TODO copy from the previous assignment
-    raise Exception("Not implemented!")
-    return loss, dprediction
+    z = predictions.copy()
+    N = len(z)
+    z -= np.max(z, axis=1).reshape(-1, 1)
+    exps = np.exp(z)
+    sums = np.sum(exps, axis=1)
+    probs = exps / sums.reshape(-1, 1)
+
+    p_pred = np.zeros(N)
+    for n in range(N):
+        p_pred[n] = probs[n, target_index[n]]
+    # print(N)
+    loss = - 1 / N * np.sum(np.log(p_pred))
+
+    d_preds = probs.copy()
+    for n in range(N):
+        d_preds[n, target_index[n]] -= 1
+    d_preds /= N
+    return loss, d_preds
 
 
 class Param:
@@ -50,17 +59,22 @@ class Param:
 
         
 class ReLULayer:
-    def __init__(self):
-        pass
+     def __init__(self):
+        # I added it insted of cache I used in previous assignment. I think it's easier to use.
+        self.X = None
 
     def forward(self, X):
         # TODO copy from the previous assignment
-        raise Exception("Not implemented!")
+        self.X = X
+        X = np.maximum(X, 0)
+        return X
 
     def backward(self, d_out):
         # TODO copy from the previous assignment
-        raise Exception("Not implemented!")
-        return d_result
+        X = self.X
+        mask = X > 0
+        d_in =  mask * d_out
+        return d_in
 
     def params(self):
         return {}
@@ -74,12 +88,21 @@ class FullyConnectedLayer:
 
     def forward(self, X):
         # TODO copy from the previous assignment
-        raise Exception("Not implemented!")
+        self.X = X
+        Xw = X.dot(self.W.value)
+        out = np.add(Xw, self.B.value)
+        return out
 
     def backward(self, d_out):
         # TODO copy from the previous assignment
-        
-        raise Exception("Not implemented!")        
+        xT = self.X.T
+        ones = np.ones((xT.shape[1], 1)).T
+        dB = np.dot(ones, d_out)
+
+        self.B.grad += dB   
+        self.W.grad += xT.dot(d_out) 
+
+        d_input = d_out.dot(self.W.value.T)
         return d_input
 
     def params(self):
@@ -217,7 +240,7 @@ class MaxPoolingLayer:
         self.X = None
 
     def forward(self, X):
-       batch_size, height, width, channels = X.shape
+        batch_size, height, width, channels = X.shape
         self.X = X
         
         # TODO: Implement maxpool forward pass
