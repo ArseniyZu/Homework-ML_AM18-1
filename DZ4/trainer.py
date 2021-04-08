@@ -38,6 +38,7 @@ class Trainer:
         learning_rate_decal, float - ratio for decaying learning rate
            every epoch
         '''
+        
         self.dataset = dataset
         self.model = model
         self.optim = optim
