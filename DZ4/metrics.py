@@ -20,6 +20,7 @@ def multiclass_accuracy(prediction, ground_truth):
     Returns:
     accuracy - ratio of accurate predictions to total samples
     """
+    
     accuracy = 0
     accuracy = np.mean(prediction == ground_truth)
 
