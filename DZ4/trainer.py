@@ -28,7 +28,6 @@ class Trainer:
                  learning_rate_decay=1.0):
         '''
         Initializes the trainer
-
         Arguments:
         model - neural network model
         dataset, instance of Dataset class - data to train on
