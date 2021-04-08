@@ -115,6 +115,7 @@ def check_model_gradient(model, X, y,
     """
     params = model.params()
 
+    
     for param_key in params:
         print("Checking gradient for %s" % param_key)
         param = params[param_key]
