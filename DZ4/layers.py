@@ -110,6 +110,7 @@ class ConvolutionalLayer:
         self.B = Param(np.zeros(out_channels))
 
         self.padding = padding
+        self.X = None
 
 
     def forward(self, X):
