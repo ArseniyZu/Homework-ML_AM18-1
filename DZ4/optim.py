@@ -25,6 +25,7 @@ class MomentumSGD:
         updated_weights, np array same shape as w
         '''
         # TODO Copy from the previous assignment
+        
         vel = self.momentum * self.velocity - learning_rate * d_w
         self.velocity = vel
         return w + self.velocity
